@@ -10,7 +10,7 @@ return {
   -- - `modify` = save when using a provided (API/User Command) means of managing sessions.
   -- - `exit` = save when exiting nvim.
   -- - `all` = `modify` and `exit` combined.
-  save_on = "all",
+  save_on = "modify",
 
   default_session = {
     -- Called via vim.cmd() whenever you swap to or otherwise enter said session. Can also be nil.
