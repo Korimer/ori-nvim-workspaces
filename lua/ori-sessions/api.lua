@@ -74,9 +74,11 @@ function M.swapToWorkspace(name)
 
   vim.api.nvim_set_current_dir(workspace.directory)
 
-  local hook = workspace.hook
-  if hook then
-    vim.cmd(hook)
+  if config.workspace_enable_hook then config.workspace_enable_hook() end
+
+  local wshook = workspace.hook
+  if wshook then
+    vim.cmd(wshook)
   end
 
   config.meta.lastSession = name
