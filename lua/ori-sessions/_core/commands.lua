@@ -22,9 +22,9 @@ end
 local function createWS(opts)
   local cwd = vim.fn.getcwd()
   local folder = opts.fargs[2] or vim.fn.fnamemodify(cwd,":t")
-  api.addWorkspace(folder, nil, {
+  api.addWorkspace(folder, cwd, {
     force = opts.bang
-    ;directory = cwd
+    ;warn_existing = false
   })
 end
 
@@ -52,7 +52,7 @@ local completions = {
   ;create = {
     op = createWS
     ; complete = function()
-      return vim.fn.fnamemodify(vim.fn.getcwd(),":t")
+      return { vim.fn.fnamemodify(vim.fn.getcwd(),":t") }
     end
   }
 }

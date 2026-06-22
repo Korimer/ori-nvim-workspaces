@@ -22,7 +22,7 @@ function M.addWorkspace(name, directory, opts)
 
   local ws_loc = directory or vim.fs.joinpath(config.workspace_location, name)
 
-  sessionopts = vim.tbl_deep_extend("force", sessionopts, config.default_session)
+  sessionopts = vim.tbl_deep_extend("keep", sessionopts, config.default_session)
 
   sessionopts.name = name
   sessionopts.directory = ws_loc
@@ -35,10 +35,13 @@ function M.addWorkspace(name, directory, opts)
   end
 
   if vim.fn.isdirectory(ws_loc) == 1 and not opts.force then
-    vim.notify(
-      "Folder " .. ws_loc .. " already exists!",
-      vim.log.levels.WARN
-    )
+    if sessionopts.warn_existing then
+      vim.notify(
+        "Folder " .. ws_loc .. " already exists!",
+        vim.log.levels.WARN
+      )
+    end
+
   else
     vim.fn.mkdir(ws_loc)
   end
