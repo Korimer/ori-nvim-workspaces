@@ -18,7 +18,7 @@ return {
     -- Can be of `BASIC`, `GIT`, `VIM`, and `AUTO`
     type = "AUTO",
     -- Called via vim.cmd() whenever you swap to or otherwise enter said session. Can also be nil.
-    hook = 'echo "Entered " . getcwd() .',
+    hook = 'echo "Entered " . getcwd()',
     -- If not nil; ori-sessions will attempt to clone this repository if it doesn't already exist in the current workspace's root.
     git_repo = nil,
     -- Can be modified freely, and will persist when nvim is closed. ori-sessions does not interface with this value.
