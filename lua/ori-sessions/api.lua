@@ -1,5 +1,6 @@
 local M = {}
 local config = require("ori-sessions.config")
+local registry = require("ori-sessions._core.registry")
 
 function M.newWorkspace(name, force)
   local ws_loc = vim.fs.joinpath(M.config.workspace_location, name)
@@ -11,7 +12,9 @@ function M.newWorkspace(name, force)
     )
     return
   end
+
   vim.fn.mkdir(ws_loc)
+  registry.registerWS(ws_loc)
 end
 
 return M
