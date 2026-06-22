@@ -36,19 +36,19 @@ end
 local completions = {
   add = {
     op = addWS
-    ;complete = _listWS()
+    ;complete = _listWS
   }
   ;delete = {
     op = delWS
-    ;complete = _listWS()
+    ;complete = _listWS
   }
   ;swap = {
     op = swapWS
-    ;complete = _listWS()
+    ;complete = _listWS
   }
   ;save = {
     op = saveWS
-    ;complete = _listWS()
+    ;complete = _listWS
   }
   ;create = {
     op = createWS
@@ -59,8 +59,18 @@ local completions = {
 }
 
 local function completion(ArgLead, CmdLine, CursorPos)
-  vim.print(CmdLine)
-  return vim.tbl_keys(completions)
+  local parsed = vim.api.nvim_parse_cmd(CmdLine, {})
+
+  if #parsed.args < 1 then
+    return vim.tbl_keys(completions)
+  end
+
+  local completion_option = completions[parsed.args[1]]
+  if completion_option then
+    return completion_option.complete()
+  end
+
+  return {}
 end
 
 local function dispatch_cmd(opts)
