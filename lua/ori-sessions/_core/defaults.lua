@@ -13,17 +13,18 @@ return {
   save_on = "all",
 
   default_session = {
-    -- Called whenever you swap to or otherwise enter said session. Can also be nil.
-    hook = function(session_name)
-      vim.print("Entered session " .. session_name)
-    end,
+    -- Called via vim.cmd() whenever you swap to or otherwise enter said session. Can also be nil.
+    hook = 'echo "Entered " . getcwd() .',
     -- If not nil; ori-sessions will attempt to clone this repository if it doesn't already exist in the current workspace's root.
     git_repo = nil,
     -- Can be of `BASIC`, `GIT`, `VIM`, and `AUTO`
     type = "AUTO",
-    -- Can be modified freely; ori-sessions does not interface with this value.
-    meta = {}
-    -- `name` and `directory` don't have sensible defaults, as they will always be overwritten
+    -- Can be modified freely, and will persist when nvim is closed. ori-sessions does not interface with this value.
+    meta = {},
+
+    -- `name` and `directory` don't have sensible defaults, as they will always be overwritten.
+    directory = nil,
+    name = nil,
   },
 
   meta = {}

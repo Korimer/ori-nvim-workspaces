@@ -12,9 +12,20 @@ function M.guessSessionType()
   end
 end
 
-function M.addWorkspace(name, opts)
-  opts = opts or {}
-  local ws_loc = opts.directory or vim.fs.joinpath(config.workspace_location, name)
+function M.addWorkspace(name, directory, opts)
+  local sessionopts
+  if opts then
+    sessionopts = vim.deepcopy(opts)
+  else
+    sessionopts = {}
+  end
+
+  local ws_loc = directory or vim.fs.joinpath(config.workspace_location, name)
+
+  sessionopts = vim.tbl_deep_extend("force", sessionopts, config.default_session)
+
+  sessionopts.name = name
+  sessionopts.directory = ws_loc
 
   if config.workspaces[name] ~= nil then
     vim.notify(
@@ -32,9 +43,7 @@ function M.addWorkspace(name, opts)
     vim.fn.mkdir(ws_loc)
   end
 
-  local ws_type = opts.type or config.default_session.type
-
-  registry._registerWS(ws_loc, name, ws_type)
+  registry._registerWS(sessionopts)
   M._conditionalSave()
 end
 
@@ -55,10 +64,17 @@ end
 function M.swapToWorkspace(name)
   local workspace = config.workspaces[name]
 
-  local hook = workspace.hook
-  if hook then hook(name) end
+  if workspace == nil then
+    vim.notify("Workspace " .. name .. " does not exist!", vim.log.levels.WARN)
+    return
+  end
 
-  vim.api.nvim_set_current_dir(workspace.path)
+  vim.api.nvim_set_current_dir(workspace.directory)
+
+  local hook = workspace.hook
+  if hook then
+    vim.cmd(hook)
+  end
 
   config.meta.lastSession = name
 end

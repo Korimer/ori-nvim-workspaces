@@ -35,11 +35,8 @@ function M._writeToRegistry(JSON)
   end
 end
 
-function M._registerWS(ws_path, ws_name, ws_type)
-  config.workspaces[ws_name] = {
-    path = ws_path
-    ;type = ws_type
-  }
+function M._registerWS(opts)
+  config.workspaces[opts.name] = opts
 end
 
 function M._packRegistry()

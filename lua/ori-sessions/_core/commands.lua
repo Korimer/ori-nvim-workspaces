@@ -2,7 +2,7 @@ local api = require("ori-sessions.api")
 local config = require("ori-sessions.config").config
 
 local function addWS(opts)
-  api.addWorkspace(opts.fargs[2],{
+  api.addWorkspace(opts.fargs[2], nil, {
     force = opts.bang
   })
 end
@@ -22,7 +22,7 @@ end
 local function createWS(opts)
   local cwd = vim.fn.getcwd()
   local folder = vim.fn.fnamemodify(cwd,":t")
-  api.addWorkspace(folder,{
+  api.addWorkspace(folder, nil, {
     force = opts.bang
     ;directory = cwd
   })
