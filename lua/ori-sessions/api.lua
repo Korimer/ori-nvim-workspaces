@@ -1,7 +1,16 @@
 local M = {}
 
 local config = require("ori-sessions.config").config
+local consts = require("ori-sessions.consts")
 local registry = require("ori-sessions._core.registry")
+
+function M.guessSessionType()
+  if vim.v.this_session ~= "" then
+    return consts.sessionTypes.VIM
+  else
+    return consts.sessionTypes.BASIC
+  end
+end
 
 function M.addWorkspace(name, opts)
   opts = opts or {}

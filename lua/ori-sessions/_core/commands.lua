@@ -1,7 +1,6 @@
 local api = require("ori-sessions.api")
 local config = require("ori-sessions.config").config
 
-
 local function addWS(opts)
   api.addWorkspace(opts.fargs[2],{
     force = opts.bang

@@ -1,3 +1,4 @@
+local consts = require("ori-sessions.consts")
 return {
   storage_location = vim.fs.joinpath(vim.fn.stdpath('data'),"ori-sessions"),
   require_full_name = false,
@@ -12,8 +13,16 @@ return {
   save_on = "all",
 
   default_session = {
-    type = "directory",
-    hook = nil,
+    -- Called whenever you swap to or otherwise enter said session. Can also be nil.
+    hook = function(session_name)
+      vim.print("Entered session " .. session_name)
+    end,
+    -- If not nil; ori-sessions will attempt to clone this repository if it doesn't already exist in the current workspace's root.
+    git_repo = nil,
+    -- Can be of `BASIC`, `GIT`, `VIM`, and `AUTO`
+    type = "AUTO",
+    -- Can be modified freely; ori-sessions does not interface with this value.
+    meta = {}
     -- `name` and `directory` don't have sensible defaults, as they will always be overwritten
   },
 
