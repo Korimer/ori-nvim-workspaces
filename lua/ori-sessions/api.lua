@@ -1,20 +1,43 @@
 local M = {}
-local config = require("ori-sessions.config")
+
+local config = require("ori-sessions.config").config
 local registry = require("ori-sessions._core.registry")
 
-function M.newWorkspace(name, force)
-  local ws_loc = vim.fs.joinpath(M.config.workspace_location, name)
+function M.addWorkspace(name, opts)
+  opts = opts or {}
+  local ws_loc = opts.directory or vim.fs.joinpath(config.workspace_location, name)
 
-  if vim.fn.isdirectory(ws_loc) == 1 and not force then
+  if config.workspaces[name] ~= nil then
     vim.notify(
-      "Folder " .. name .. " already exists!",
-      vim.log.levels.WARN
+      "A session named " .. name .. " already exists!",
+      vim.log.levels.ERROR
     )
-    return
   end
 
-  vim.fn.mkdir(ws_loc)
-  registry.registerWS(ws_loc)
+  if vim.fn.isdirectory(ws_loc) == 1 and not opts.force then
+    vim.notify(
+      "Folder " .. ws_loc .. " already exists!",
+      vim.log.levels.WARN
+    )
+  else
+    vim.fn.mkdir(ws_loc)
+  end
+
+  local ws_type = opts.type or config.default_session.type
+
+  registry._registerWS(ws_loc, name, ws_type)
+end
+
+function M.delWorkspace(name, del_folder)
+  -- TODO
+  vim.notify("TODO", vim.log.levels.ERROR)
+end
+
+function M.swapToWorkspace(name)
+  local workspace = config.workspaces[name]
+  local hook = workspace.hook
+  if hook then hook(name) end
+  vim.api.nvim_set_current_dir(workspace.path)
 end
 
 return M
