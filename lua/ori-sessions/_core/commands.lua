@@ -1,6 +1,7 @@
 local api = require("ori-sessions.api")
 local config = require("ori-sessions.config").config
 
+
 local function addWS(opts)
   api.addWorkspace(opts.fargs[2],{
     force = opts.bang
@@ -15,22 +16,50 @@ local function swapWS(opts)
   api.swapToWorkspace(opts.fargs[2])
 end
 
+local function saveWS(opts)
+  vim.notify("TODO: saveWS", vim.log.levels.ERROR)
+end
+
+local function createWS(opts)
+  local cwd = vim.fn.getcwd()
+  local folder = vim.fn.fnamemodify(cwd,":t")
+  api.addWorkspace(folder,{
+    force = opts.bang
+    ;directory = cwd
+  })
+end
+
+local function _listWS()
+  return vim.tbl_keys(config.workspaces)
+end
+
 local completions = {
   add = {
     op = addWS
-    ;complete = {}
+    ;complete = _listWS()
   }
   ;delete = {
     op = delWS
-    ;complete = {}
+    ;complete = _listWS()
   }
   ;swap = {
     op = swapWS
-    ;complete = {}
+    ;complete = _listWS()
+  }
+  ;save = {
+    op = saveWS
+    ;complete = _listWS()
+  }
+  ;create = {
+    op = createWS
+    ; complete = function()
+      return vim.fn.fnamemodify(vim.fn.getcwd(),":t")
+    end
   }
 }
 
 local function completion(ArgLead, CmdLine, CursorPos)
+  vim.print(CmdLine)
   return vim.tbl_keys(completions)
 end
 

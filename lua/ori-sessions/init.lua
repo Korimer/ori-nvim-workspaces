@@ -17,6 +17,8 @@ function M.setup(opts)
 
   if M.config.restore_prev_session then
     require("ori-sessions.api").swapToLastWorkspace()
+  else
+    M.config.meta.lastSession = nil
   end
 end
 
