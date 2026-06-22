@@ -26,18 +26,42 @@ function M.addWorkspace(name, opts)
   local ws_type = opts.type or config.default_session.type
 
   registry._registerWS(ws_loc, name, ws_type)
+  M._conditionalSave()
 end
 
 function M.delWorkspace(name, del_folder)
   -- TODO
   vim.notify("TODO", vim.log.levels.ERROR)
+  M._conditionalSave()
+end
+
+function M.swapToLastWorkspace()
+  if config.meta.lastSession then
+    M.swapToWorkspace(config.meta.lastSession)
+  else
+    vim.notify("ori-sessions: No previous session to swap to!", vim.log.levels.WARN)
+  end
 end
 
 function M.swapToWorkspace(name)
   local workspace = config.workspaces[name]
+
   local hook = workspace.hook
   if hook then hook(name) end
+
   vim.api.nvim_set_current_dir(workspace.path)
+
+  config.meta.lastSession = name
+end
+
+function M._conditionalSave()
+  if config.save_on == "modify" or config.save_on == "all" then
+    M.save()
+  end
+end
+
+function M.save()
+  registry.writeRegistry()
 end
 
 return M

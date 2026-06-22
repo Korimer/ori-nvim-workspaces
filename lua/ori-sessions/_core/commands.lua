@@ -1,4 +1,5 @@
 local api = require("ori-sessions.api")
+local config = require("ori-sessions.config").config
 
 local function addWS(opts)
   api.addWorkspace(opts.fargs[2],{
@@ -47,14 +48,17 @@ local function setup()
     }
   )
 
-  --local group = vim.api.nvim_create_augroup("ori-sessions",{clear=false})
-  --vim.api.nvim_create_autocmd("VimLeave",{
-  --  pattern = "*",
-  --  group = group,
-  --  callback = function()
-  --    require("ori-sessions._core.registry").writeRegistry()
-  --  end
-  --})
+  local group = vim.api.nvim_create_augroup("ori-sessions",{clear=false})
+
+  if config.save_on == "exit" or config.save_on == "all" then
+    vim.api.nvim_create_autocmd("VimLeave",{
+      pattern = "*",
+      group = group,
+      callback = function()
+        require("ori-sessions.api").save()
+      end
+    })
+  end
 end
 
 return {

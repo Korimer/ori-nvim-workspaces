@@ -14,6 +14,10 @@ function M.setup(opts)
 
   local commands = require("ori-sessions._core.commands")
   commands.setup()
+
+  if M.config.restore_prev_session then
+    require("ori-sessions.api").swapToLastWorkspace()
+  end
 end
 
 return M

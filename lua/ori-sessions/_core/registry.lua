@@ -40,20 +40,20 @@ function M._registerWS(ws_path, ws_name, ws_type)
     path = ws_path
     ;type = ws_type
   }
-  M.writeRegistry()
 end
 
 function M._packRegistry()
   return {
     workspaces = config.workspaces
     ;version = config.meta.version
+    ;lastSession = config.meta.lastSession
   }
 end
 
 function M._unpackRegistry(reg_table)
   config.workspaces = reg_table.workspaces
-  config.meta = config.meta or {}
   config.meta.version = reg_table.version
+  config.meta.lastSession = reg_table.lastSession
 end
 
 function M.writeRegistry()
