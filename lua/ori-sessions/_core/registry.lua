@@ -1,12 +1,12 @@
 local M = {}
 
-local config = require("ori-sessions").config
-local consts = require("ori-sessions._core.consts")
+local config = require("ori-sessions.config").config
+local consts = require("ori-sessions.consts")
 local registry = vim.fs.joinpath(config.storage_location, consts.registryName)
 
 
 function M.generateRegistryIfNotExists()
-  if vim.fn.filereadable(registry) then
+  if vim.fn.filereadable(registry) == 1 then
     return
   end
 
@@ -19,9 +19,11 @@ function M.generateRegistryIfNotExists()
 end
 
 function M._createRegistry()
-  M._writeToRegistry("")
+  M._writeToRegistry(vim.json.encode({
+    workspaces = {}
+    ;version = consts.latestRegistryVersion
+  }))
 end
-
 
 function M._writeToRegistry(JSON)
   local file = io.open(registry, "w")
@@ -29,7 +31,7 @@ function M._writeToRegistry(JSON)
     file:write(JSON)
     file:close()
   else
-    vim.notify("Error: Could not write file " .. registry)
+    vim.notify("Could not write file " .. registry)
   end
 end
 
@@ -41,24 +43,41 @@ function M._registerWS(ws_path, ws_name, ws_type)
   M.writeRegistry()
 end
 
-function M.writeRegistry()
-  local regfmt = {
+function M._packRegistry()
+  return {
     workspaces = config.workspaces
-    ;version = config.version
+    ;version = config.meta.version
   }
+end
+
+function M._unpackRegistry(reg_table)
+  config.workspaces = reg_table.workspaces
+  config.meta = config.meta or {}
+  config.meta.version = reg_table.version
+end
+
+function M.writeRegistry()
+  local regfmt = M._packRegistry()
   local regJSON = vim.json.encode(regfmt)
   M._writeToRegistry(regJSON)
 end
 
-function M._loadRegistry()
-  local regdata = vim.json.decode(registry)
-  config.workspaces = regdata.workspaces
-  config.version = consts.latestVersion
+-- TODO: ReadFromRegistry (for cleanliness)
+function M._readRegistry()
+  local regfile = io.open(registry, "r")
+  if regfile then
+    local regcontents = regfile:read("*a")
+    local regdata = vim.json.decode(regcontents)
+    M._unpackRegistry(regdata)
+  else
+    vim.notify("Could not read file " .. registry, vim.log.levels.ERROR)
+  end
 end
+
 
 function M.setup()
   M.generateRegistryIfNotExists()
-  M._loadRegistry()
+  M._readRegistry()
 end
 
 return M
