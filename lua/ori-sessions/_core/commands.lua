@@ -33,7 +33,7 @@ local function _listWS()
 end
 
 local completions = {
-  add = {
+  addnew = {
     op = addWS
     ;complete = function() return {} end
   }
@@ -49,7 +49,7 @@ local completions = {
     op = saveWS
     ;complete = _listWS
   }
-  ;register = {
+  ;addhere = {
     op = createWS
     ; complete = function()
       return { vim.fn.fnamemodify(vim.fn.getcwd(),":t") }
