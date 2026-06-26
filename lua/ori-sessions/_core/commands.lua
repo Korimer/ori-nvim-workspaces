@@ -41,7 +41,7 @@ local completions = {
     op = delWS
     ;complete = _listWS
   }
-  ;swap = {
+  ;restore = {
     op = swapWS
     ;complete = _listWS
   }
@@ -49,7 +49,7 @@ local completions = {
     op = saveWS
     ;complete = _listWS
   }
-  ;create = {
+  ;register = {
     op = createWS
     ; complete = function()
       return { vim.fn.fnamemodify(vim.fn.getcwd(),":t") }
